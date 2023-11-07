@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"time"
 
 	"layeh.com/gumble/gumble"
 	_ "layeh.com/gumble/opus"
@@ -42,4 +43,7 @@ func main() {
 	}
 
 	b.start()
+	for {
+        time.Sleep(time.Second)
+}
 }
