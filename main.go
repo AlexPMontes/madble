@@ -44,6 +44,7 @@ func main() {
 
 	b.start()
 	for {
-        time.Sleep(time.Second)
-}
+		b.Stream.StartSource()
+		time.Sleep(5 * time.Second)
+        }
 }

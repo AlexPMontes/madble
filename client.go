@@ -30,6 +30,7 @@ func (b *Barnard) start() {
                 os.Exit(1)
         } else {
                 b.Stream = stream
+                b.Stream.StartSource()
         }
 }
 
