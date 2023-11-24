@@ -5,7 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
-	//"time"
+	"time"
 
 	"layeh.com/gumble/gumble"
 	_ "layeh.com/gumble/opus"
@@ -44,7 +44,7 @@ func main() {
 
 	b.start()
 	for {
-		//b.Stream.StartSource()
-		//time.Sleep(5 * time.Second)
+		b.Stream.StartSource()
+		time.Sleep(5 * time.Second)
         }
 }
