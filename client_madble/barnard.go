@@ -15,4 +15,5 @@ type Barnard struct {
 	TLSConfig tls.Config
 
 	Stream *gumbleopenal.Stream
+  Connected int
 }

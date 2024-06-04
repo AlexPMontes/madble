@@ -13,38 +13,43 @@ import (
 
 func main() {
 	// Command line flags
-	server := flag.String("server", "localhost:64738", "the server to connect to")
-	username := flag.String("username", "", "the username of the client")
-	password := flag.String("password", "", "the password of the server")
-	insecure := flag.Bool("insecure", false, "skip server certificate verification")
-	certificate := flag.String("certificate", "", "PEM encoded certificate and private key")
+    server := flag.String("server", "localhost:64738", "the server to connect to")
+    username := flag.String("username", "", "the username of the client")
+    password := flag.String("password", "", "the password of the server")
+    insecure := flag.Bool("insecure", false, "skip server certificate verification")
+    certificate := flag.String("certificate", "", "PEM encoded certificate and private key")
 
-	flag.Parse()
+    flag.Parse()
 
-	// Initialize
-	b := Barnard{
-		Config:  gumble.NewConfig(),
-		Address: *server,
-	}
+  for {
+    // Initialize
+    b := Barnard{
+      Config:  gumble.NewConfig(),
+      Address: *server,
+    }
 
-	b.Config.Username = *username
-	b.Config.Password = *password
+    b.Config.Username = *username
+    b.Config.Password = *password
 
-	if *insecure {
-		b.TLSConfig.InsecureSkipVerify = true
-	}
-	if *certificate != "" {
-		cert, err := tls.LoadX509KeyPair(*certificate, *certificate)
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "%s\n", err)
-			os.Exit(1)
-		}
-		b.TLSConfig.Certificates = append(b.TLSConfig.Certificates, cert)
-	}
+    if *insecure {
+      b.TLSConfig.InsecureSkipVerify = true
+    }
+    if *certificate != "" {
+      cert, err := tls.LoadX509KeyPair(*certificate, *certificate)
+      if err != nil {
+        fmt.Fprintf(os.Stderr, "%s\n", err)
+        os.Exit(1)
+      }
+      b.TLSConfig.Certificates = append(b.TLSConfig.Certificates, cert)
+    }
 
-	b.start()
-	for {
-		b.Stream.StartSource()
-		time.Sleep(5 * time.Second)
-        }
+    for b.start() == 1 {
+      time.Sleep(5 * time.Second)
+    }
+
+    for b.Connected == 1{
+      //b.Stream.StartSource()
+      time.Sleep(5 * time.Second)
+    }
+  }
 }

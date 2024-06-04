@@ -40,4 +40,4 @@ RUN echo 'pcm.!default { \
 
 
 # Comando para iniciar la aplicación
-CMD ["./madble_client", "-server", "192.168.1.41:64738", "-username", "alex_docker", "-insecure"]
+CMD ["./madble_client", "-server", "localhost:64738", "-username", "alex_docker", "-insecure"]

@@ -4,40 +4,44 @@ import (
         "fmt"
         "net"
         "os"
+        //"time"
 
         "layeh.com/gumble/gumble"
         "layeh.com/gumble/gumbleopenal"
         "layeh.com/gumble/gumbleutil"
 )
 
-func (b *Barnard) start() {
+func (b *Barnard) start() int{
         b.Config.Attach(gumbleutil.AutoBitrate)
         b.Config.Attach(b)
 
         var err error
         _, err = gumble.DialWithDialer(new(net.Dialer), b.Address, b.Config, &b.TLSConfig)
+        
+
         if err != nil {
                 fmt.Fprintf(os.Stderr, "%s\n", err)
-                os.Exit(1)
-        }
-
-        // Audio
-        if os.Getenv("ALSOFT_LOGLEVEL") == "" {
-                os.Setenv("ALSOFT_LOGLEVEL", "0")
-        }
-        if stream, err := gumbleopenal.New(b.Client); err != nil {
-                fmt.Fprintf(os.Stderr, "%s\n", err)
-                os.Exit(1)
+                fmt.Fprintf(os.Stderr, "retrying...\n")
+                return 1
+                //os.Exit(1)
         } else {
-                b.Stream = stream
-                b.Stream.StartSource()
+          if os.Getenv("ALSOFT_LOGLEVEL") == "" {
+                  os.Setenv("ALSOFT_LOGLEVEL", "0")
+          }  
+          if stream, err := gumbleopenal.New(b.Client); err != nil {
+                  fmt.Fprintf(os.Stderr, "%s\n", err)
+                  os.Exit(1)
+          } else {
+                  b.Stream = stream
+                  b.Stream.StartSource()
+          }
+          return 0
         }
 }
 
 func (b *Barnard) OnConnect(e *gumble.ConnectEvent) {
         b.Client = e.Client
-
-
+        b.Connected = 1
         // b.UpdateInputStatus(fmt.Sprintf("To: %s", e.Client.Self.Channel.Name))
         // b.AddOutputLine(fmt.Sprintf("Connected to %s", b.Client.Conn.RemoteAddr()))
         // if e.WelcomeMessage != nil {
@@ -46,6 +50,12 @@ func (b *Barnard) OnConnect(e *gumble.ConnectEvent) {
 }
 
  func (b *Barnard) OnDisconnect(e *gumble.DisconnectEvent) {
+        b.Connected = 0
+        /*for b.Connected == 0 {
+          time.Sleep(5 * time.Second)
+          b.start()
+          fmt.Fprintf(os.Stderr, "%d\n", b.Connected)
+        }*/        
 //      var reason string
 //      switch e.Type {
 //      case gumble.DisconnectError:
