@@ -22,37 +22,45 @@ func main() {
     flag.Parse()
 
   for {
-    // Initialize
-    b := Barnard{
-      Config:  gumble.NewConfig(),
-      Address: *server,
-    }
-
-    b.Config.Username = *username
-    b.Config.Password = *password
-
-    if *insecure {
-      b.TLSConfig.InsecureSkipVerify = true
-    }
-    if *certificate != "" {
-      cert, err := tls.LoadX509KeyPair(*certificate, *certificate)
-      if err != nil {
-        fmt.Fprintf(os.Stderr, "%s\n", err)
-        os.Exit(1)
+    func() {
+      defer func() {  
+        if r := recover(); r != nil {
+          fmt.Fprintf(os.Stderr, "Recovered from panic: %v\n", r)
+          time.Sleep(5 * time.Second)
+        }
+      }()
+      // Initialize
+      b := Barnard{
+        Config:  gumble.NewConfig(),
+        Address: *server,
       }
-      b.TLSConfig.Certificates = append(b.TLSConfig.Certificates, cert)
-    }
 
-    for b.start() == 1 {
-      time.Sleep(5 * time.Second)
-    }
+      b.Config.Username = *username
+      b.Config.Password = *password
 
-    //b.Stream.StartSource()
+      if *insecure {
+        b.TLSConfig.InsecureSkipVerify = true
+      }
+      if *certificate != "" {
+        cert, err := tls.LoadX509KeyPair(*certificate, *certificate)
+        if err != nil {
+          fmt.Fprintf(os.Stderr, "%s\n", err)
+          os.Exit(1)
+        }
+        b.TLSConfig.Certificates = append(b.TLSConfig.Certificates, cert)
+      }
 
-    for b.Connected == 1{
+      for b.start() == 1 {
+        time.Sleep(5 * time.Second)
+      }
+
       //b.Stream.StartSource()
-      time.Sleep(5 * time.Second)
-    }
+
+      for b.Connected == 1{
+        //b.Stream.StartSource()
+        time.Sleep(5 * time.Second)
+      }
+    }()
   }
 }
 
