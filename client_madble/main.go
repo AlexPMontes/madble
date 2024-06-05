@@ -47,9 +47,12 @@ func main() {
       time.Sleep(5 * time.Second)
     }
 
+    //b.Stream.StartSource()
+
     for b.Connected == 1{
       //b.Stream.StartSource()
       time.Sleep(5 * time.Second)
     }
   }
 }
+

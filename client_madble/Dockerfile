@@ -32,12 +32,9 @@ WORKDIR /app
 
 RUN apt update && apt install -y libopenal-dev
 
-RUN echo 'pcm.!default { \
-        type plug \
-        slave.pcm "hw:1,0" \
-    }' > /etc/asound.conf
+COPY asound.conf /etc/asound.conf
 
 
 
 # Comando para iniciar la aplicación
-CMD ["./madble_client", "-server", "192.169.1.3:64738", "-username", "mft-04", "-insecure"]
+CMD ["./madble_client", "-server", "192.168.1.3:64738", "-username", "mft-04", "-insecure"]

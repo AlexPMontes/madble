@@ -50,7 +50,8 @@ func (b *Barnard) OnConnect(e *gumble.ConnectEvent) {
 }
 
  func (b *Barnard) OnDisconnect(e *gumble.DisconnectEvent) {
-        b.Connected = 0
+        b.Stream.Destroy()
+	b.Connected = 0
         /*for b.Connected == 0 {
           time.Sleep(5 * time.Second)
           b.start()
