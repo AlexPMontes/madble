@@ -35,6 +35,5 @@ RUN apt update && apt install -y libopenal-dev
 COPY asound.conf /etc/asound.conf
 
 
-
 # Comando para iniciar la aplicación
 CMD ["./madble_client", "-server", "192.168.1.3:64738", "-username", "mft-04", "-insecure"]
